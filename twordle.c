@@ -1,6 +1,6 @@
 //Addy LaCost
 //4-21-2026
-//Project 10 : off-brand wordle
+//Project 10 : making off-brand wordle
 
 #include <stdio.h>
 #define ROW 50
@@ -91,7 +91,17 @@ void getword(char answer[]){
 	}
 }
 void checkanswer(char twordle[][COL], char answer[], int* row, int* correct, int* guessnum){
-	int i, j;
+	int i;
+	int canswer[26];
+	for(i = 0; i < 26; i++){
+		canswer[i] = 0;
+	}
+	for(i = 0; i < 5; i++){
+		if(twordle[*row][i] != answer[i]){
+			int x = answer[i] - 'a';
+			canswer[x]++;
+		}
+	}
 	for(i = 0; twordle[*row - 2][i] != '\0'; i++){
 		if(twordle[*row - 2][i] == answer[i]){
 			if(twordle[*row - 2][i] >= 'a' && twordle[*row - 2][i]<='z'){
@@ -99,12 +109,14 @@ void checkanswer(char twordle[][COL], char answer[], int* row, int* correct, int
 			}
 			(*correct)++;
 		}
-		twordle[*row - 1][i] = ' ';
-		for(j = 0; answer[j] != '\0'; j++){
-			if(twordle[*row - 2][i] == answer[j]){
-				twordle[*row - 1][i] = '^';
-			}
-		}	
+		twordle[*row - 1][i] = ' ';		
+	}
+	for(i = 0; i < 5; i++){
+		int x = twordle[*row - 2][i] - 'a';
+		if(x >= 0 && x < 26 && canswer[x] > 0){
+			twordle[*row-1][i]='^';
+			canswer[x]--;
+		}
 	}
 	twordle[*row - 1][i] = '\0';
 	twordle[*row][i] = '\0';
